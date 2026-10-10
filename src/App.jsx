@@ -6,6 +6,7 @@ import ScrollToTop from './components/layout/ScrollToTop';
 import Home from './pages/Home';
 import About from './pages/About';
 import Events from './pages/Events';
+import Gallery from './pages/Gallery';
 import MetaSummit from './pages/MetaSummit';
 import NotFound from './pages/NotFound';
 import './App.css';
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/gallery" element={<Gallery />} /> {/* 2. Register /gallery route */}
             <Route path="/meta-summit" element={<MetaSummit />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
