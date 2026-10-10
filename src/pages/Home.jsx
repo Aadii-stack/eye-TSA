@@ -1,32 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
+import PreLoader from '../components/home/PreLoader';
 import Hero from '../components/home/Hero';
-import AboutIntro from '../components/home/AboutIntro';
+import BigTitleBanner from '../components/home/BigTitleBanner';
 import ElasticGallery from '../components/home/ElasticGallery';
-import FeaturedEvent from '../components/home/FeaturedEvent';
-import MetaSummitFeature from '../components/home/MetaSummitFeature';
+import RecentEvents from '../components/home/RecentEvents';
+import MetaSummitTicket from '../components/home/MetaSummitTicket';
+import FacultyCommittee from '../components/home/FacultyCommittee';
+import CoreCommittee from '../components/home/CoreCommittee';
+import AboutRedirect from '../components/home/AboutRedirect';
 
-export default function Home() {
-  useEffect(() => {
-    document.title = 'ITSA — Information Technology Student Association | SLRTCE';
-    window.scrollTo(0, 0);
-  }, []);
+const Home = () => {
+  const [loading, setLoading] = useState(true);
 
   return (
-    <div className="home-page-view">
-      {/* Section 1: Hero */}
-      <Hero />
+    <>
+      {loading && <PreLoader onComplete={() => setLoading(false)} />}
+      <main className={`home-wrapper ${loading ? 'is-loading' : 'is-ready'}`}>
+        <Hero />
+        <BigTitleBanner />
+        <ElasticGallery />
+         <AboutRedirect />
+        <RecentEvents />
+        <MetaSummitTicket />
+        
+        
+      {/* Faculty Section with #faculty anchor */}
+      <div id="faculty">
+      <FacultyCommittee />
+      </div>
 
-      {/* Section 2: What is ITSA? */}
-      <AboutIntro />
-
-      {/* Section 3: The ITSA Experience — Elastic Gallery (Signature Interaction) */}
-      <ElasticGallery />
-
-      {/* Section 4: What's Happening / Featured Event */}
-      <FeaturedEvent />
-
-      {/* Section 5: Meta Summit Feature */}
-      <MetaSummitFeature />
-    </div>
+      {/* Core Committee Section with #committee anchor */}
+      <div id="committee">
+      <CoreCommittee />
+      </div>
+      </main>
+    </>
   );
-}
+};
+
+export default Home;

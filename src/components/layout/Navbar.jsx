@@ -1,148 +1,136 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { siteConfig } from '../../data/siteConfig';
-import { Menu, X, ArrowUpRight, Cpu } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
+import logoImg from '../../assets/itsa-logo.png';
 import './Navbar.css';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Track scroll state for backdrop blur
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 30);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu with Escape key
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && mobileMenuOpen) {
-        setMobileMenuOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mobileMenuOpen]);
-
   const navLinks = [
-    { label: 'Home', path: siteConfig.links.home },
-    { label: 'About', path: siteConfig.links.about },
-    { label: 'Events', path: siteConfig.links.events },
-    { label: 'Meta Summit', path: siteConfig.links.metaSummit, isFlagship: true },
-  ];
+  { label: 'Home', path: siteConfig.links.home },
+  { label: 'Team', path: '/#faculty' }, // Navigates & scrolls directly to Faculty section
+  { label: 'About', path: siteConfig.links.about },
+  { label: 'Events', path: siteConfig.links.events },
+  { label: 'Gallery', path: '/gallery' },
+  { label: 'Meta Summit', path: siteConfig.links.metaSummit, isFlagship: true },
+];
 
   return (
-    <header className={`navbar-header ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="container-wide navbar-container">
-        {/* Brand identity */}
-        <Link to="/" className="navbar-brand" aria-label="ITSA SLRTCE Home">
-          <div className="brand-logo-frame">
+    <>
+      <header className={`floating-nav-wrapper ${isScrolled ? 'scrolled' : ''}`}>
+        <div 
+          className={`nav-pill-container ${isHovered ? 'expanded' : 'collapsed'}`}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Larger Brand Logo */}
+          <Link to="/" className="pill-logo-btn" aria-label="ITSA Home">
             <img 
-              src={siteConfig.logo} 
-              alt="ITSA Official Logo" 
-              className="brand-logo-img"
-              onError={(e) => {
-                // Graceful fallback if asset path differs
-                e.target.style.display = 'none';
-              }} 
+              src={logoImg} 
+              alt="ITSA Logo" 
+              className="pill-logo-img"
+              onError={(e) => { e.target.style.display = 'none'; }}
             />
-            <span className="brand-wordmark-fallback">ITSA</span>
-          </div>
-          <div className="brand-identity-text">
-            <span className="brand-acronym">ITSA</span>
-            <span className="brand-subtext">SLRTCE • Information Technology</span>
-          </div>
-        </Link>
+            <span className="pill-brand-text">ITSA</span>
+          </Link>
 
-        {/* Tagline micro-badge (visible on desktop) */}
-        <div className="navbar-tagline-chip">
-          <span className="circuit-dot"></span>
-          <span className="tagline-text">{siteConfig.tagline}</span>
+          {/* Navigation Links */}
+          <nav className="pill-nav-menu">
+            <ul className="pill-nav-list">
+              {navLinks.map((link) => (
+                <li key={link.path} className="pill-nav-item">
+                  {link.path.startsWith('/#') ? (
+                    <a href={link.path} className="pill-nav-link">
+                      {link.label}
+                    </a>
+                  ) : (
+                    <NavLink
+                      to={link.path}
+                      end={link.path === '/'}
+                      className={({ isActive }) =>
+                        `pill-nav-link ${isActive ? 'active' : ''} ${link.isFlagship ? 'flagship' : ''}`
+                      }
+                    >
+                      {link.label}
+                      {link.isFlagship && <span className="pill-flagship-tag">VIP</span>}
+                    </NavLink>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
-        {/* Desktop Navigation */}
-        <nav className="navbar-nav desktop-nav" aria-label="Main navigation">
-          <ul className="nav-list">
-            {navLinks.map((link) => (
-              <li key={link.path} className="nav-item">
-                <NavLink
-                  to={link.path}
-                  end={link.path === '/'}
-                  className={({ isActive }) =>
-                    `nav-link ${isActive ? 'active' : ''} ${link.isFlagship ? 'flagship-link' : ''}`
-                  }
-                >
-                  {link.label}
-                  {link.isFlagship && <span className="flagship-badge">FLAGSHIP</span>}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Mobile menu button */}
-        <button
-          type="button"
-          className="mobile-menu-btn"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-expanded={mobileMenuOpen}
-          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
+        {/* Mobile Top Navbar Header */}
+        <div className="mobile-nav-bar">
+          <Link to="/" className="mobile-brand-link">
+            <img src={logoImg} alt="ITSA Logo" className="mobile-logo-img" />
+            <span className="mobile-brand-title">ITSA SLRTCE</span>
+          </Link>
+          <button
+            type="button"
+            className="mobile-hamburger-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </header>
 
       {/* Mobile Drawer */}
       <div className={`mobile-nav-drawer ${mobileMenuOpen ? 'open' : ''}`}>
-        <div className="container mobile-nav-content">
-          <div className="mobile-drawer-header">
-            <span className="circuit-label">
-              <span className="circuit-dot"></span>
-              Navigation Circuit
-            </span>
+        <div className="mobile-drawer-inner">
+          <div className="drawer-header">
+            <span className="circuit-tag">• NAVIGATION CIRCUIT</span>
+            <button className="drawer-close-btn" onClick={() => setMobileMenuOpen(false)}>
+              <X size={20} />
+            </button>
           </div>
-          <ul className="mobile-nav-list">
+          
+          <ul className="drawer-links-list">
             {navLinks.map((link) => (
               <li key={link.path}>
-                <NavLink
-                  to={link.path}
-                  end={link.path === '/'}
-                  className={({ isActive }) =>
-                    `mobile-nav-link ${isActive ? 'active' : ''} ${link.isFlagship ? 'flagship' : ''}`
-                  }
-                >
-                  <span className="mobile-link-text">{link.label}</span>
-                  {link.isFlagship ? (
-                    <span className="flagship-badge">FLAGSHIP</span>
-                  ) : (
-                    <ArrowUpRight size={16} className="mobile-arrow" />
-                  )}
-                </NavLink>
+                {link.path.startsWith('/#') ? (
+                  <a href={link.path} className="drawer-link" onClick={() => setMobileMenuOpen(false)}>
+                    <span>{link.label}</span>
+                    <ArrowUpRight size={18} />
+                  </a>
+                ) : (
+                  <NavLink
+                    to={link.path}
+                    end={link.path === '/'}
+                    className={({ isActive }) => `drawer-link ${isActive ? 'active' : ''}`}
+                  >
+                    <span>{link.label}</span>
+                    {link.isFlagship ? (
+                      <span className="pill-flagship-tag">FLAGSHIP</span>
+                    ) : (
+                      <ArrowUpRight size={18} />
+                    )}
+                  </NavLink>
+                )}
               </li>
             ))}
           </ul>
-          <div className="mobile-drawer-footer">
-            <p className="mobile-tagline">{siteConfig.tagline}</p>
-            <p className="mobile-affiliation">
-              Department of Information Technology, SLRTCE
-            </p>
-          </div>
         </div>
       </div>
-    </header>
+    </>
   );
 }
