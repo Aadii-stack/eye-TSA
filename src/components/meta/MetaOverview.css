@@ -1,0 +1,191 @@
+.meta-overview-section {
+  position: relative;
+  background-color: var(--color-bg-base);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.meta-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .meta-overview-grid {
+    grid-template-columns: 1.2fr 0.95fr;
+    gap: 4.5rem;
+  }
+}
+
+.overview-narrative {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.narrative-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.overview-p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.overview-highlights-box {
+  padding: 1.5rem;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  margin-top: 0.5rem;
+}
+
+.highlights-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--color-gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.85rem;
+}
+
+.highlights-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.highlights-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--color-warm-dim);
+  line-height: 1.5;
+}
+
+.highlight-icon {
+  color: var(--color-gold);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* Poster Card */
+.overview-poster-col {
+  display: flex;
+  justify-content: center;
+}
+
+.summit-poster-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-gold-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.poster-container-inner {
+  border: 1px dashed var(--color-border-medium);
+  border-radius: var(--radius-sm);
+  padding: 2.5rem 1.5rem;
+  min-height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.summit-poster-img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-xs);
+}
+
+.summit-poster-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2rem;
+}
+
+.summit-badge-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--color-gold-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.award-icon {
+  color: var(--color-gold);
+}
+
+.placeholder-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.edition-sup {
+  font-size: 0.72rem;
+  color: var(--color-gold);
+  letter-spacing: 0.12em;
+}
+
+.summit-brand-name {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--color-warm-white);
+  letter-spacing: 0.04em;
+}
+
+.college-sub {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.poster-slot-notice {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.notice-badge {
+  font-size: 0.7rem;
+  color: var(--color-gold);
+  letter-spacing: 0.1em;
+}
+
+.notice-sub {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+  max-width: 320px;
+}
+
+/* Card Nodes */
+.card-node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--color-gold);
+}
+
+.card-node.tl { top: -3px; left: -3px; }
+.card-node.tr { top: -3px; right: -3px; }
+.card-node.bl { bottom: -3px; left: -3px; }
+.card-node.br { bottom: -3px; right: -3px; }

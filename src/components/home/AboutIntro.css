@@ -1,0 +1,134 @@
+.about-intro-section {
+  position: relative;
+  background-color: var(--color-bg-base);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.about-intro-header {
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.about-editorial-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .about-editorial-grid {
+    grid-template-columns: 1.25fr 1fr;
+    gap: 4.5rem;
+  }
+}
+
+/* Narrative Block */
+.narrative-block {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: clamp(1.75rem, 4vw, 3rem);
+  position: relative;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.narrative-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+}
+
+.narrative-chapter {
+  color: var(--color-gold);
+}
+
+.narrative-mono {
+  color: var(--color-text-muted);
+}
+
+.narrative-p-large {
+  font-family: var(--font-sans);
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  color: var(--color-warm-white);
+  line-height: 1.55;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.narrative-p-body {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.narrative-footer {
+  display: flex;
+}
+
+.about-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Facets Column */
+.facets-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.facet-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.75rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.facet-item:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-bg-card-hover);
+  transform: translateX(4px);
+}
+
+.facet-index {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.facet-num {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-gold);
+  letter-spacing: 0.08em;
+}
+
+.facet-icon {
+  color: var(--color-gold);
+}
+
+.facet-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-warm-white);
+  margin-bottom: 0.4rem;
+}
+
+.facet-desc {
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}

@@ -1,0 +1,49 @@
+.about-bottom-cta-section {
+  position: relative;
+  background-color: #0c0e14;
+}
+
+.about-cta-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: clamp(2rem, 4vw, 3.5rem);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-gold-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+
+@media (min-width: 860px) {
+  .about-cta-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.cta-card-left {
+  max-width: 600px;
+}
+
+.about-cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.8vw, 2.3rem);
+  font-weight: 800;
+  color: var(--color-warm-white);
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.about-cta-sub {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.cta-card-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  flex-shrink: 0;
+}
