@@ -1,37 +1,77 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { siteConfig } from '../../data/siteConfig';
 import { aboutData } from '../../data/aboutData';
-import { Sparkles, Compass, ShieldCheck } from 'lucide-react';
 import './AboutHero.css';
 
 export default function AboutHero() {
+  const [activeTab, setActiveTab] = useState(0);
+
+  const pillars = [
+    {
+      label: "Mission & Purpose",
+      title: "Bridging Theory & Practice",
+      desc: aboutData.mission,
+    },
+    {
+      label: "Operating Philosophy",
+      title: "Action Over Theory",
+      desc: "We prioritize labs, hackathons, open-source projects, and peer mentorship over passive learning. Every initiative is conceptualized and built by students.",
+    },
+    {
+      label: "Departmental Identity",
+      title: aboutData.tagline,
+      desc: `Constituted under the ${siteConfig.department} at ${siteConfig.institutionShort} to provide a student-led ecosystem for continuous technical growth.`,
+    },
+  ];
+
   return (
-    <section className="about-hero-section" aria-labelledby="about-page-title">
+    <section className="hero-section" aria-labelledby="hero-title">
       <div className="container-wide">
-        <div className="about-hero-coords font-mono">
-          <span>CHAPTER // ABOUT ITSA</span>
-          <span className="coord-divider">/</span>
-          <span>SLRTCE DEPT OF INFORMATION TECHNOLOGY</span>
+        <div className="hero-header-badge font-mono">
+          <span>{siteConfig.department}</span>
+          <span className="badge-sep">•</span>
+          <span>{siteConfig.institutionShort}</span>
         </div>
 
-        <div className="about-hero-main">
-          <div className="circuit-label">
-            <span className="circuit-dot"></span>
-            Association Charter & Vision
+        <div className="hero-grid">
+          <div className="hero-main-content">
+            <h1 id="hero-title" className="hero-title">
+              Engineered by Students. <br />
+              <span className="title-accent">Empowering Technical Growth.</span>
+            </h1>
+
+            <p className="hero-lead">
+              The official student association providing a collaborative ecosystem for software engineering, peer learning, and hands-on technical innovation.
+            </p>
           </div>
 
-          <h1 id="about-page-title" className="about-page-title">
-            Engineered by Students. <br />
-            <span className="title-highlight">Empowering Technical Growth.</span>
-          </h1>
+          <div className="hero-interactive-card">
+            <div className="hero-card-tabs">
+              {pillars.map((item, idx) => (
+                <button
+                  key={idx}
+                  className={`hero-tab-btn ${activeTab === idx ? 'active' : ''}`}
+                  onClick={() => setActiveTab(idx)}
+                >
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
 
-          <div className="about-hero-statement-box">
-            <p className="statement-lead">
-              "{aboutData.mission}"
-            </p>
-            <div className="statement-author">
-              <span className="author-motto font-mono">{aboutData.tagline}</span>
-              <span className="author-dept">{siteConfig.department}, {siteConfig.institutionShort}</span>
+            <div className="hero-card-body">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <h3 className="hero-card-heading">{pillars[activeTab].title}</h3>
+                  <p className="hero-card-desc">"{pillars[activeTab].desc}"</p>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
