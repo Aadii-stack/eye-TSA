@@ -4,39 +4,44 @@ import { siteConfig } from '../data/siteConfig';
 import AboutHero from '../components/about/AboutHero';
 import MissionValues from '../components/about/MissionValues';
 import Timeline from '../components/about/Timeline';
-import CommitteeSection from '../components/about/CommitteeSection';
+import BatchArchive from '../components/about/BatchArchive';
 import { ArrowRight, Calendar, Award } from 'lucide-react';
 import './About.css';
 
 export default function About() {
   useEffect(() => {
-    document.title = 'About ITSA — Vision, Charter & Team | SLRTCE';
+    document.title = 'About ITSA — Vision, Charter & Legacy | SLRTCE';
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="about-page-view">
-      {/* Page Heading & Introduction */}
+      {/* Background Ambient Circuit Grid */}
+      <div className="about-ambient-grid" aria-hidden="true" />
+
+      {/* 1. Hero Charter Section */}
       <AboutHero />
 
-      {/* Structured Mission, Core Values & Pillars */}
+      {/* 2. Core Mission & Operating Principles */}
       <MissionValues />
 
-      {/* Visual Timeline / Journey */}
+      {/* 3. Interactive Milestones Progression */}
       <Timeline />
 
-      {/* Committee & Leadership Structure */}
-      <CommitteeSection />
+      {/* 4. Historical Student Council Archive (2021 - Present) */}
+      <BatchArchive />
 
-      {/* Navigation CTA banner back to Events and Meta Summit */}
-      <section className="about-bottom-cta-section section-py-sm" aria-label="Explore more of ITSA">
+      {/* 5. Bottom Navigation Banner */}
+      <section className="about-bottom-cta-section" aria-label="Explore more of ITSA">
         <div className="container-wide">
           <div className="about-cta-card">
+            <div className="cta-ambient-glow" />
+            
             <div className="cta-card-left">
-              <span className="circuit-label">
-                <span className="circuit-dot"></span>
-                Next in The Circuit
-              </span>
+              <div className="circuit-tag font-mono">
+                <span className="circuit-box">NEXT</span>
+                <span>SYSTEM NAVIGATION</span>
+              </div>
               <h2 className="about-cta-title">
                 Experience ITSA in Action
               </h2>
@@ -46,14 +51,14 @@ export default function About() {
             </div>
 
             <div className="cta-card-buttons">
-              <Link to={siteConfig.links.events} className="btn btn-secondary btn-lg">
-                <Calendar size={18} />
+              <Link to={siteConfig.links.events} className="cta-btn cta-btn-secondary font-mono">
+                <Calendar size={16} />
                 <span>Events Archive</span>
               </Link>
-              <Link to={siteConfig.links.metaSummit} className="btn btn-primary btn-lg">
-                <Award size={18} />
+              <Link to={siteConfig.links.metaSummit} className="cta-btn cta-btn-primary font-mono">
+                <Award size={16} />
                 <span>Meta Summit Portal</span>
-                <ArrowRight size={18} />
+                <ArrowRight size={16} />
               </Link>
             </div>
           </div>
