@@ -1,63 +1,91 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { aboutData } from '../../data/aboutData';
-import { CheckCircle2, Terminal, Users, Award, BookOpen } from 'lucide-react';
 import './MissionValues.css';
 
 export default function MissionValues() {
+  const { values = [], pillars = [] } = aboutData;
+  const [activePrinciple, setActivePrinciple] = useState(0);
+
   return (
-    <section className="mission-values-section section-py" aria-labelledby="values-heading">
+    <section className="section-padding">
       <div className="container-wide">
-        {/* Core Values Section */}
-        <div className="section-intro">
-          <div className="circuit-label">
-            <span className="circuit-dot"></span>
-            01 / Guiding Principles
-          </div>
-          <h2 id="values-heading" className="section-title">
-            The Values Behind Every Session
-          </h2>
-          <p className="section-subtitle">
-            How ITSA approaches technical education, community responsibility, and student autonomy.
-          </p>
+        
+        {/* Operating Principles Header */}
+        <div className="section-header">
+          <span className="section-label font-mono">OPERATING PRINCIPLES</span>
+          <h2 className="section-title">How We Build & Work</h2>
         </div>
 
-        <div className="values-grid">
-          {aboutData.values.map((val) => (
-            <div key={val.num} className="value-card">
-              <div className="value-header">
-                <span className="value-number font-mono">[ {val.num} ]</span>
-                <span className="value-node-dot"></span>
-              </div>
-              <h3 className="value-title">{val.title}</h3>
-              <p className="value-desc">{val.description}</p>
+        {/* Interactive Principles Scanner (Console + Spec Pane) */}
+        <div className="principles-scanner-grid">
+          <div className="principles-selector-list">
+            {values.map((val, idx) => {
+              const isActive = activePrinciple === idx;
+
+              return (
+                <motion.div
+                  key={idx}
+                  className={`principle-selector-item ${isActive ? 'active' : ''}`}
+                  onMouseEnter={() => setActivePrinciple(idx)}
+                  onClick={() => setActivePrinciple(idx)}
+                  whileHover={{ x: 4 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <span className="selector-index font-mono">{val.num}</span>
+                  <div className="selector-text">
+                    <h3 className="selector-title">{val.title}</h3>
+                  </div>
+                  <div className="selector-indicator" />
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <div className="principles-display-pane">
+            <div className="pane-glass-inner">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activePrinciple}
+                  initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.98, y: -10 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  className="pane-content"
+                >
+                  <span className="pane-num font-mono">{values[activePrinciple]?.num} SPECIFICATION</span>
+                  <h3 className="pane-heading">{values[activePrinciple]?.title}</h3>
+                  <p className="pane-desc">{values[activePrinciple]?.description}</p>
+                </motion.div>
+              </AnimatePresence>
             </div>
+          </div>
+        </div>
+
+        {/* Core Initiatives Header */}
+        <div className="section-header margin-top-xl">
+          <span className="section-label font-mono">DEPARTMENTAL PILLARS</span>
+          <h2 className="section-title">Core Initiatives</h2>
+        </div>
+
+        {/* Multi-Dimensional Spotlight Grid */}
+        <div className="initiatives-spotlight-grid">
+          {pillars.map((pillar, pIdx) => (
+            <motion.div
+              key={pIdx}
+              className="initiative-spotlight-card"
+              whileHover={{ y: -6 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="card-ambient-light" />
+              <div className="card-top-line" />
+              <span className="initiative-index font-mono">INITIATIVE 0{pIdx + 1}</span>
+              <h3 className="initiative-title">{pillar.label}</h3>
+              <p className="initiative-desc">{pillar.description}</p>
+            </motion.div>
           ))}
         </div>
 
-        {/* Pillars of Activity Section */}
-        <div className="pillars-wrapper">
-          <div className="pillars-header">
-            <div className="circuit-label">
-              <span className="circuit-dot"></span>
-              02 / Pillars of Action
-            </div>
-            <h3 className="pillars-main-title">
-              What ITSA Delivers for IT Students
-            </h3>
-          </div>
-
-          <div className="pillars-grid">
-            {aboutData.pillars.map((pillar, idx) => (
-              <div key={pillar.label} className="pillar-item">
-                <div className="pillar-num font-mono">0{idx + 1}</div>
-                <div className="pillar-details">
-                  <h4 className="pillar-name">{pillar.label}</h4>
-                  <p className="pillar-text">{pillar.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );

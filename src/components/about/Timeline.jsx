@@ -1,49 +1,71 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { aboutData } from '../../data/aboutData';
 import './Timeline.css';
 
 export default function Timeline() {
+  const { timeline = [] } = aboutData;
+  const [activeStep, setActiveStep] = useState(0);
+
   return (
-    <section className="timeline-section section-py" aria-labelledby="timeline-heading">
+    <section className="section-padding">
       <div className="container-wide">
-        <div className="section-intro">
-          <div className="circuit-label">
-            <span className="circuit-dot"></span>
-            03 / Evolution & Milestones
-          </div>
-          <h2 id="timeline-heading" className="section-title">
-            The ITSA Journey
-          </h2>
-          <p className="section-subtitle">
-            How a departmental student initiative grew into a hub for campus technical activity and flagship conventions.
-          </p>
+        
+        <div className="section-header">
+          <span className="section-label font-mono">CHRONOLOGICAL PROGRESSION</span>
+          <h2 className="section-title">The ITSA Journey</h2>
         </div>
 
-        <div className="timeline-circuit-track">
-          <div className="timeline-central-line"></div>
+        {/* Interactive Progress Stepper */}
+        <div className="stepper-navigation-bar">
+          <div className="stepper-track-line" />
 
-          <div className="timeline-items">
-            {aboutData.timeline.map((step, idx) => {
-              const isEven = idx % 2 === 0;
+          <div className="stepper-buttons-row">
+            {timeline.map((item, idx) => {
+              const isActive = activeStep === idx;
+              const isPassed = activeStep > idx;
+
               return (
-                <div
-                  key={step.phase}
-                  className={`timeline-entry ${isEven ? 'entry-left' : 'entry-right'}`}
+                <button
+                  key={idx}
+                  className={`stepper-node-btn ${isActive ? 'active' : ''} ${isPassed ? 'passed' : ''}`}
+                  onClick={() => setActiveStep(idx)}
                 >
-                  <div className="timeline-entry-card">
-                    <div className="entry-header">
-                      <span className="entry-phase font-mono">{step.phase}</span>
-                      <span className="entry-marker font-mono">0{idx + 1}</span>
-                    </div>
-                    <h3 className="entry-title">{step.title}</h3>
-                    <p className="entry-detail">{step.detail}</p>
+                  <div className="node-ring">
+                    <span className="node-core" />
                   </div>
-                  <div className="timeline-node-dot" aria-hidden="true"></div>
-                </div>
+                  <div className="node-label-box">
+                    <span className="node-phase font-mono">{item.phase}</span>
+                  </div>
+                </button>
               );
             })}
           </div>
         </div>
+
+        {/* Dynamic Focus Spec Showcase Pane */}
+        <div className="stepper-showcase-card">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeStep}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="showcase-content"
+            >
+              <div className="showcase-top-meta font-mono">
+                <span>MILESTONE PHASE 0{activeStep + 1}</span>
+                <span className="meta-tag">{timeline[activeStep]?.phase}</span>
+              </div>
+
+              <h3 className="showcase-title">{timeline[activeStep]?.title}</h3>
+              <p className="showcase-detail">{timeline[activeStep]?.detail}</p>
+              
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
       </div>
     </section>
   );
