@@ -26,10 +26,22 @@
 }
 
 .nav-pill-container.expanded {
-  max-width: 680px; /* Expanded view on hover */
+  max-width: min(784px, calc(100vw - 40px)); /* Fits all six links + flagship tag without clipping */
   padding: 8px 22px;
   border-color: rgba(226, 168, 41, 0.8);
   box-shadow: 0 12px 40px rgba(226, 168, 41, 0.2);
+}
+
+/* Tablet band: compact spacing so the full menu still fits the pill */
+@media (min-width: 769px) and (max-width: 880px) {
+  .pill-nav-list {
+    gap: 4px;
+  }
+
+  .pill-nav-link {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
 }
 
 .pill-logo-btn {

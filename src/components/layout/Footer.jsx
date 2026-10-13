@@ -1,14 +1,59 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { siteConfig } from '../../data/siteConfig';
 import { ArrowUpRight, MapPin, Mail, Sparkles } from 'lucide-react';
+import { WebCorner } from '../meta/MetaDecor';
 import './Footer.css';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { pathname } = useLocation();
+
+  // Meta Summit ships its own footer theme; every other route keeps Footer.css as-is.
+  const isMetaSummit = pathname === siteConfig.links.metaSummit;
+  const footerRef = useRef(null);
+  const [metaRevealed, setMetaRevealed] = useState(false);
+
+  useEffect(() => {
+    if (!isMetaSummit) return undefined;
+
+    setMetaRevealed(false);
+    const el = footerRef.current;
+
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setMetaRevealed(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setMetaRevealed(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isMetaSummit]);
+
+  const footerClasses = ['site-footer'];
+  if (isMetaSummit) {
+    footerClasses.push('meta-footer');
+    if (metaRevealed) footerClasses.push('meta-footer-revealed');
+  }
 
   return (
-    <footer className="site-footer">
+    <footer ref={footerRef} className={footerClasses.join(' ')}>
+      {isMetaSummit && (
+        <>
+          <WebCorner className="meta-footer-web meta-footer-web-tr" />
+          <WebCorner className="meta-footer-web meta-footer-web-bl" orientation="bl" />
+        </>
+      )}
+
       {/* Circuit accent border on top */}
       <div className="footer-top-rule">
         <span className="footer-circuit-node left"></span>

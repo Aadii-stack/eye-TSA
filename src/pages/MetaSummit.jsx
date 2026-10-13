@@ -5,6 +5,8 @@ import MetaTracks from '../components/meta/MetaTracks';
 import MetaSchedulePlaceholder from '../components/meta/MetaSchedulePlaceholder';
 import MetaFaq from '../components/meta/MetaFaq';
 import MetaInterestModal from '../components/meta/MetaInterestModal';
+import '../components/meta/metaTheme.css';
+import '../components/meta/MetaFooter.css';
 
 export default function MetaSummit() {
   const [interestModalOpen, setInterestModalOpen] = useState(false);

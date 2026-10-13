@@ -1,7 +1,30 @@
 .meta-tracks-section {
   position: relative;
-  background-color: #0b0c10;
-  border-bottom: 1px solid var(--color-border-subtle);
+  background: linear-gradient(180deg, #0a1428 0%, #07090f 92%);
+  overflow: hidden;
+}
+
+.meta-tracks-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.meta-ghost-tracks {
+  top: clamp(2.5rem, 6vw, 5rem);
+  right: -0.5rem;
+}
+
+.meta-tracks-spider {
+  top: 16%;
+  left: 1.4rem;
+  height: 96px;
+  width: auto;
+}
+
+@media (max-width: 900px) {
+  .meta-tracks-spider {
+    display: none;
+  }
 }
 
 .tracks-grid {
@@ -18,28 +41,109 @@
 
 @media (min-width: 1040px) {
   .tracks-grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
 }
 
+/* Angular clipped wrapper that provides the gradient border */
+.track-card-clip-wrap {
+  height: 100%;
+}
+
+.track-card-clip {
+  --track-accent: var(--meta-crimson);
+  --track-accent-soft: rgba(227, 38, 54, 0.32);
+  height: 100%;
+  padding: 1px;
+  background: linear-gradient(
+    155deg,
+    var(--track-accent-soft) 0%,
+    rgba(255, 255, 255, 0.06) 45%,
+    rgba(140, 184, 255, 0.16) 100%
+  );
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+  transition:
+    background var(--transition-base),
+    filter var(--transition-base),
+    transform var(--transition-base);
+}
+
+.track-wrap--blue .track-card-clip {
+  --track-accent: var(--meta-ice);
+  --track-accent-soft: rgba(140, 184, 255, 0.34);
+}
+
+.track-card-clip:hover {
+  background: linear-gradient(
+    155deg,
+    var(--track-accent) 0%,
+    var(--track-accent-soft) 45%,
+    rgba(140, 184, 255, 0.32) 100%
+  );
+  transform: translateY(-4px);
+  filter:
+    drop-shadow(0 18px 34px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 22px var(--track-accent-soft));
+}
+
 .track-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
+  position: relative;
+  height: 100%;
+  background: #0b1322;
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
   padding: 2.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 1.5rem;
-  transition: all var(--transition-base);
+  overflow: hidden;
 }
 
-.track-card:hover {
-  border-color: var(--color-gold-border);
-  background: var(--color-bg-card-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+.track-card-texture {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.16;
+  pointer-events: none;
+  transition:
+    opacity 0.5s ease,
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.track-card-texture::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(11, 19, 34, 0.2) 0%, rgba(11, 19, 34, 0.88) 80%),
+    radial-gradient(90% 60% at 100% 0%, var(--track-accent-soft), transparent 60%);
+}
+
+.track-card-clip:hover .track-card-texture {
+  opacity: 0.3;
+  transform: scale(1.05);
+}
+
+.track-num {
+  position: absolute;
+  top: 0.35rem;
+  right: 1.7rem;
+  z-index: 1;
+  font-family: var(--meta-font-display);
+  font-size: 6.4rem;
+  line-height: 1;
+  color: rgba(245, 245, 247, 0.09);
+  text-shadow: 0 0 26px var(--track-accent-soft);
+  pointer-events: none;
+  user-select: none;
+}
+
+.track-card-header,
+.track-card-body,
+.track-card-footer {
+  position: relative;
+  z-index: 2;
 }
 
 .track-card-header {
@@ -49,21 +153,20 @@
 }
 
 .track-code-badge {
-  font-size: 0.75rem;
-  color: var(--color-gold);
-  padding: 0.2rem 0.6rem;
-  background: rgba(212, 175, 55, 0.08);
-  border: 1px solid var(--color-circuit-line);
-  border-radius: var(--radius-xs);
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  color: var(--track-accent);
+  padding: 0.22rem 0.65rem;
+  background: rgba(7, 9, 15, 0.5);
+  border: 1px solid var(--track-accent-soft);
+  letter-spacing: 0.1em;
 }
 
 .track-status-dot {
   width: 6px;
   height: 6px;
-  background: var(--color-gold);
   border-radius: 50%;
-  box-shadow: 0 0 6px var(--color-gold);
+  background: var(--track-accent);
+  box-shadow: 0 0 8px var(--track-accent);
 }
 
 .track-card-body {
@@ -73,17 +176,19 @@
 }
 
 .track-title {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--color-warm-white);
-  line-height: 1.25;
+  font-family: var(--meta-font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--meta-white);
+  line-height: 1.15;
 }
 
 .track-description {
   font-size: 0.925rem;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
+  color: var(--meta-grey);
+  line-height: 1.65;
 }
 
 .track-keywords {
@@ -94,12 +199,12 @@
 }
 
 .kw-badge {
-  font-size: 0.72rem;
-  color: var(--color-warm-dim);
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-xs);
-  padding: 0.2rem 0.55rem;
+  font-size: 0.7rem;
+  color: #c7d2ea;
+  background: rgba(10, 20, 40, 0.65);
+  border: 1px solid rgba(140, 184, 255, 0.22);
+  padding: 0.22rem 0.6rem;
+  letter-spacing: 0.04em;
 }
 
 .track-card-footer {
@@ -107,11 +212,12 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 1rem;
-  border-top: 1px solid var(--color-border-subtle);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.72rem;
-  color: var(--color-text-muted);
+  color: var(--meta-grey);
+  letter-spacing: 0.06em;
 }
 
 .circuit-coord {
-  color: var(--color-gold);
+  color: var(--track-accent);
 }
