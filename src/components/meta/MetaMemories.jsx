@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { TetherLine, WebCorner } from './MetaDecor';
-import { Reveal, MaskReveal, META_EASE } from './Reveal';
+import { Reveal, META_EASE } from './Reveal';
 import labFloor from '../../assets/events/cbp-ty/cbp-ty-cover.jpg';
 import labSession from '../../assets/events/cbp-ty/cbp-ty-gallery-1.jpg';
 import recognition from '../../assets/events/cbp-ty/cbp-ty-gallery-2.jpg';
@@ -10,9 +10,9 @@ import memento from '../../assets/events/cbp-ty/cbp-ty-gallery-3.jpg';
 import './MetaMemories.css';
 
 /*
- * Genuine ITSA laboratory-session photographs from the repository archive
- * (src/assets/events/cbp-ty). Swap `src`/`alt` when the approved convention
- * set is released; `pos` is the object-position window for the crop.
+ * Genuine ITSA lab-session photographs from src/assets/events/cbp-ty.
+ * `pos` is the crop window, `depth` the scroll parallax in px, `inner` the
+ * drift of the image inside its own frame.
  */
 const FRAMES = [
   {
@@ -24,6 +24,7 @@ const FRAMES = [
     height: 1920,
     pos: '50% 42%',
     depth: -20,
+    inner: 15,
     alt: 'An ITSA session running in the SLRTCE Information Technology computer laboratory, faculty at the front and students at the terminals.',
   },
   {
@@ -35,6 +36,7 @@ const FRAMES = [
     height: 1920,
     pos: '50% 40%',
     depth: 14,
+    inner: 9,
     alt: 'Faculty addressing seated students from the front of the SLRTCE computer laboratory.',
   },
   {
@@ -46,6 +48,7 @@ const FRAMES = [
     height: 1920,
     pos: '50% 46%',
     depth: 16,
+    inner: 8,
     alt: 'A student being greeted by faculty at the front of the laboratory during an ITSA session.',
   },
   {
@@ -57,27 +60,62 @@ const FRAMES = [
     height: 1920,
     pos: '50% 40%',
     depth: -10,
+    inner: 12,
     alt: 'Two faculty members exchanging a plant as a token of thanks at an ITSA event.',
   },
 ];
 
-const ENTRANCE = {
-  featured: {
-    hidden: { opacity: 0, clipPath: 'inset(0 100% 0 0)' },
-    show: {
-      opacity: 1,
-      clipPath: 'inset(0 0% 0 0)',
-      transition: { duration: 1.2, ease: META_EASE },
-    },
+/*
+ * Four transform layers, one owner each, so nothing overwrites another:
+ *   .mem-frame        -> scroll depth (CSS translate3d from --sp * --depth)
+ *   .mem-frame-crop   -> the directional clip wipe
+ *   .mem-frame-media  -> focus opacity/scale, plus pointer tilt on the leader
+ *   img               -> internal parallax via the independent `translate` property
+ * Directions alternate and the closing frame lingers, so the sequence reads as
+ * composed rather than as four copies of one animation.
+ */
+const CLIPS = {
+  ltr: ['inset(0 100% 0 0)', 'inset(0 0% 0 0)'],
+  ttb: ['inset(0 0 100% 0)', 'inset(0 0% 0 0)'],
+  rtl: ['inset(0 0 0 100%)', 'inset(0 0 0 0%)'],
+  btt: ['inset(100% 0 0 0)', 'inset(0% 0 0 0)'],
+};
+
+const reveal = (direction, duration, delay = 0) => ({
+  hidden: { clipPath: CLIPS[direction][0] },
+  show: {
+    clipPath: CLIPS[direction][1],
+    transition: { duration, delay, ease: META_EASE },
   },
-  support: {
-    hidden: { opacity: 0, y: 42, scale: 0.97 },
-    show: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: { duration: 0.9, ease: META_EASE },
-    },
+});
+
+const focus = (delay) => ({
+  hidden: { opacity: 0, scale: 1.07 },
+  show: { opacity: 1, scale: 1, transition: { duration: 1.05, delay, ease: META_EASE } },
+});
+
+const caption = (delay) => ({
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, delay, ease: META_EASE } },
+});
+
+const REVEALS = [
+  reveal('ltr', 1.2),
+  reveal('ttb', 0.95, 0.04),
+  reveal('rtl', 0.9, 0.02),
+  reveal('btt', 1.45, 0.1),
+];
+
+const FOCUS = [focus(0.1), focus(0.14), focus(0.12), focus(0.3)];
+
+const CAPTIONS = [caption(0.46), caption(0.4), caption(0.38), caption(0.72)];
+
+const TITLE_WIPE = {
+  hidden: { clipPath: 'inset(0 100% 0 0)', opacity: 0.35 },
+  show: {
+    clipPath: 'inset(0 0% 0 0)',
+    opacity: 1,
+    transition: { duration: 1.05, delay: 0.08, ease: META_EASE },
   },
 };
 
@@ -221,14 +259,24 @@ export default function MetaMemories() {
   const lightX = useTransform(scrollYProgress, [0, 1], ['-8%', '8%']);
   const lightOpacity = useTransform(scrollYProgress, [0, 0.45, 1], [0.35, 0.95, 0.45]);
 
-  // Pointer tilt on the featured frame only.
+  // How far the reader has travelled through the archive, and the hand-off glow.
+  const threadScale = useTransform(scrollYProgress, [0, 0.12], [0, 1]);
+  const railScale = useTransform(scrollYProgress, [0.06, 0.94], [0, 1]);
+  const codaOpacity = useTransform(scrollYProgress, [0.55, 0.97], [0, 0.9]);
+
+  // Pointer tilt on the featured frame only, and only where hovering exists.
+  const finePointer = useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches,
+    [],
+  );
+  const useTilt = !reduce && finePointer;
+
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
   const tiltX = useSpring(useTransform(pointerY, [-0.5, 0.5], [4, -4]), { stiffness: 120, damping: 18 });
   const tiltY = useSpring(useTransform(pointerX, [-0.5, 0.5], [-5, 5]), { stiffness: 120, damping: 18 });
 
   const handlePointerMove = (event) => {
-    if (reduce) return;
     const rect = event.currentTarget.getBoundingClientRect();
     pointerX.set((event.clientX - rect.left) / rect.width - 0.5);
     pointerY.set((event.clientY - rect.top) / rect.height - 0.5);
@@ -253,14 +301,11 @@ export default function MetaMemories() {
     >
       <TetherLine className="meta-memories-tether" />
 
-      {/* Luminous thread handing the eye from the overview into the archive */}
+      {/* Seam into the archive, drawn by scroll since a collapsed line has no area to intersect */}
       <motion.span
         className="mem-thread"
         aria-hidden="true"
-        initial={reduce ? false : { scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 1.1, ease: META_EASE }}
+        style={reduce ? undefined : { scaleX: threadScale }}
       />
 
       <motion.div
@@ -288,11 +333,22 @@ export default function MetaMemories() {
             </div>
           </Reveal>
 
-          <MaskReveal delay={0.08} from="inset(0 0 100% 0)">
-            <h2 id="meta-memories-heading" className="section-title meta-memories-heading">
+          {/* The wipe sits on the heading so the observed box keeps an area to intersect */}
+          <motion.div
+            className="meta-memories-title"
+            variants={{ hidden: {}, show: {} }}
+            initial={reduce ? false : 'hidden'}
+            whileInView={reduce ? undefined : 'show'}
+            viewport={{ once: true, margin: '-60px' }}
+          >
+            <motion.h2
+              id="meta-memories-heading"
+              className="section-title meta-memories-heading"
+              variants={TITLE_WIPE}
+            >
               Meta Summit 2025
-            </h2>
-          </MaskReveal>
+            </motion.h2>
+          </motion.div>
 
           <Reveal delay={0.14}>
             <p className="meta-memories-kicker font-mono">Memories</p>
@@ -303,72 +359,99 @@ export default function MetaMemories() {
               Selected frames from the ITSA event archive.
             </p>
           </Reveal>
+
+          {/* Travel distance through the archive, scored against the section */}
+          <motion.span
+            className="mem-progress"
+            aria-hidden="true"
+            initial={reduce ? false : { opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <motion.span
+              className="mem-progress-bar"
+              style={reduce ? undefined : { scaleX: railScale }}
+            />
+          </motion.span>
         </div>
 
         <motion.div
           className="mem-composition"
           style={reduce ? undefined : { '--sp': layerShift }}
           initial={reduce ? false : 'hidden'}
-          whileInView="show"
+          whileInView={reduce ? undefined : 'show'}
           viewport={{ once: true, margin: '-80px' }}
           variants={{
             hidden: {},
-            show: { transition: { staggerChildren: 0.16, delayChildren: 0.1 } },
+            show: { transition: { staggerChildren: 0.18, delayChildren: 0.1 } },
           }}
         >
           {FRAMES.map((frame, idx) => (
             <div
               key={frame.key}
-              className={`mem-frame ${frame.modifier}`}
-              style={{ '--depth': frame.depth }}
-              {...(idx === 0 && !reduce
+              className={`mem-frame ${frame.modifier}${idx % 2 ? ' mem-frame--cool' : ''}${
+                idx === 0 || idx === FRAMES.length - 1 ? ' mem-frame--travel' : ''
+              }`}
+              style={{ '--depth': frame.depth, '--inner': frame.inner }}
+              {...(idx === 0 && useTilt
                 ? { onPointerMove: handlePointerMove, onPointerLeave: resetPointer }
                 : {})}
             >
-              <motion.figure
-                className="mem-frame-shift"
-                variants={idx === 0 ? ENTRANCE.featured : ENTRANCE.support}
-              >
-                <motion.span
-                  className="mem-frame-media"
-                  style={idx === 0 && !reduce ? { rotateX: tiltX, rotateY: tiltY } : undefined}
-                >
-                  <button
-                    type="button"
-                    className="mem-frame-trigger"
-                    onClick={() => setOpenIndex(idx)}
-                    aria-label={`Enlarge photograph ${idx + 1} of ${FRAMES.length}: ${frame.label}`}
-                    ref={(el) => {
-                      triggersRef.current[idx] = el;
-                    }}
+              <figure className="mem-frame-shift">
+                <motion.div className="mem-frame-crop" variants={REVEALS[idx]}>
+                  <motion.span
+                    className="mem-frame-media"
+                    variants={FOCUS[idx]}
+                    style={idx === 0 && useTilt ? { rotateX: tiltX, rotateY: tiltY } : undefined}
                   >
-                    <img
-                      src={frame.src}
-                      alt={frame.alt}
-                      width={frame.width}
-                      height={frame.height}
-                      loading={idx === 0 ? 'eager' : 'lazy'}
-                      decoding="async"
-                      style={{ objectPosition: frame.pos }}
-                    />
-                  </button>
-                  <span className="mem-frame-shade" aria-hidden="true" />
-                  <span className="mem-frame-edge" aria-hidden="true" />
-                </motion.span>
+                    <button
+                      type="button"
+                      className="mem-frame-trigger"
+                      onClick={() => setOpenIndex(idx)}
+                      aria-label={`Enlarge photograph ${idx + 1} of ${FRAMES.length}: ${frame.label}`}
+                      ref={(el) => {
+                        triggersRef.current[idx] = el;
+                      }}
+                    >
+                      <img
+                        src={frame.src}
+                        alt={frame.alt}
+                        width={frame.width}
+                        height={frame.height}
+                        loading={idx === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
+                        style={{ objectPosition: frame.pos }}
+                      />
+                    </button>
+                    <span className="mem-frame-shade" aria-hidden="true" />
+                    <span className="mem-frame-edge" aria-hidden="true" />
+                  </motion.span>
+                </motion.div>
 
-                <figcaption className="mem-frame-caption font-mono">
+                <motion.figcaption
+                  className="mem-frame-caption font-mono"
+                  variants={CAPTIONS[idx]}
+                >
                   <span className="caption-index">{String(idx + 1).padStart(2, '0')}</span>
                   <span className="caption-index caption-divider" aria-hidden="true">
                     /
                   </span>
                   <span className="caption-index">{String(FRAMES.length).padStart(2, '0')}</span>
                   <span className="caption-label">{frame.label}</span>
-                </figcaption>
-              </motion.figure>
+                </motion.figcaption>
+              </figure>
             </div>
           ))}
         </motion.div>
       </div>
+
+      {/* The archive hands off to the footer in light rather than stopping short */}
+      <motion.div
+        className="mem-coda"
+        aria-hidden="true"
+        style={reduce ? undefined : { opacity: codaOpacity }}
+      />
 
       {openIndex !== null && (
         <Lightbox
