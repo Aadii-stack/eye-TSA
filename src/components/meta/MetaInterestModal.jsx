@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Bell, CheckCircle2, Send } from 'lucide-react';
 import './MetaInterestModal.css';
 
@@ -7,7 +7,11 @@ export default function MetaInterestModal({ isOpen, onClose }) {
   const [studentYear, setStudentYear] = useState('FE');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  if (!isOpen) return null;
+  const handleClose = () => {
+    setIsSubmitted(false);
+    setEmail('');
+    onClose();
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,11 +19,16 @@ export default function MetaInterestModal({ isOpen, onClose }) {
     setIsSubmitted(true);
   };
 
-  const handleClose = () => {
-    setIsSubmitted(false);
-    setEmail('');
-    onClose();
-  };
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="interest-modal-backdrop" onClick={handleClose} role="dialog" aria-modal="true">

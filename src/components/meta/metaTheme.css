@@ -26,6 +26,12 @@
 
 /* ---------- Shared element restyles (page scope only) ---------- */
 
+/* Tighter, deliberate vertical rhythm for this page's sections */
+.meta-summit-page-view section.section-py {
+  padding-top: clamp(3rem, 5.5vw, 4.75rem);
+  padding-bottom: clamp(3rem, 5.5vw, 4.75rem);
+}
+
 .meta-summit-page-view .circuit-label {
   color: var(--meta-ice);
   letter-spacing: 0.16em;
@@ -98,7 +104,7 @@
   pointer-events: none;
   user-select: none;
   font-family: var(--meta-font-display);
-  font-size: clamp(6rem, 17vw, 14rem);
+  font-size: clamp(3rem, 8vw, 6.25rem);
   line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
@@ -175,6 +181,36 @@
   50% {
     transform: rotate(-2.4deg);
   }
+}
+
+/* ---------- Single strand + vertical tether line ---------- */
+
+.meta-strand {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+  color: rgba(140, 184, 255, 0.42);
+}
+
+.meta-strand path {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.meta-tether {
+  display: block;
+  width: 1px;
+  height: clamp(64px, 9vw, 128px);
+  margin: 0 auto;
+  transform-origin: top center;
+  background: linear-gradient(
+    180deg,
+    rgba(227, 38, 54, 0.7) 0%,
+    rgba(140, 184, 255, 0.45) 46%,
+    transparent 100%
+  );
 }
 
 /* ---------- Section hairlines (red-to-blue gradient rules) ---------- */

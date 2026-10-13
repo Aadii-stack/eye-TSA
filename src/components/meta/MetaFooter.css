@@ -161,8 +161,13 @@
   color: var(--mf-grey);
 }
 
+/* Department line: professional sans, not the terminal mono of the shared footer */
 .site-footer.meta-footer .footer-college-tag {
-  color: var(--mf-ice);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--mf-white);
 }
 
 .site-footer.meta-footer .footer-college-tag .circuit-dot {
@@ -266,26 +271,10 @@
   color: var(--mf-muted);
 }
 
-.site-footer.meta-footer .circuit-status-chip {
-  background: rgba(10, 20, 40, 0.7);
-  border: 1px solid var(--mf-border);
-  color: var(--mf-ice);
-}
-
-.site-footer.meta-footer .circuit-pulse-dot {
-  background-color: var(--mf-crimson);
-  box-shadow: 0 0 8px rgba(227, 38, 54, 0.95);
-  animation: metaFooterPulse 2.4s ease-in-out infinite;
-}
-
-@keyframes metaFooterPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.35;
-  }
+/* The circuit status chip is not shown on Meta Summit (shared footer markup
+   stays untouched for every other route). */
+.site-footer.meta-footer .footer-bottom-right {
+  display: none;
 }
 
 /* ---------- Viewport reveal ---------- */
@@ -346,14 +335,6 @@
 
   .site-footer.meta-footer.meta-footer-revealed .footer-rule-line {
     transform: scaleX(1);
-  }
-}
-
-/* ---------- Reduced motion ---------- */
-
-@media (prefers-reduced-motion: reduce) {
-  .site-footer.meta-footer .circuit-pulse-dot {
-    animation: none;
   }
 }
 

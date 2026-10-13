@@ -99,6 +99,60 @@ export function SpiderMotif({ className = '', style }) {
   );
 }
 
+/*
+ * A single fine strand that draws itself horizontally, used for the
+ * hero entrance and to bridge one section into the next.
+ */
+const STRAND_PATH = 'M0 14 C 74 2, 148 26, 226 12 S 372 2, 460 18';
+
+export function WebStrand({ className = '', delay = 0 }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <svg
+      className={`meta-strand ${className}`}
+      viewBox="0 0 460 28"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {reduce ? (
+        <path d={STRAND_PATH} />
+      ) : (
+        <motion.path
+          d={STRAND_PATH}
+          initial={{ pathLength: 0, opacity: 0 }}
+          whileInView={{ pathLength: 1, opacity: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 1.6, delay, ease: META_EASE }}
+        />
+      )}
+    </svg>
+  );
+}
+
+/*
+ * Vertical web tether: the thin line a section "hangs" from.
+ */
+export function TetherLine({ className = '', delay = 0 }) {
+  const reduce = useReducedMotion();
+
+  if (reduce) {
+    return <span className={`meta-tether ${className}`} aria-hidden="true" />;
+  }
+
+  return (
+    <motion.span
+      className={`meta-tether ${className}`}
+      aria-hidden="true"
+      initial={{ scaleY: 0, opacity: 0 }}
+      whileInView={{ scaleY: 1, opacity: 1 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 1.1, delay, ease: META_EASE }}
+    />
+  );
+}
+
 const RADIALS = [0, 45, 90, 135, 180, 225, 270, 315].map((deg) => {
   const rad = (deg * Math.PI) / 180;
   return `M32 32 L${(32 + 26 * Math.cos(rad)).toFixed(2)} ${(32 + 26 * Math.sin(rad)).toFixed(2)}`;

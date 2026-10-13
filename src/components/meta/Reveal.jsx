@@ -68,3 +68,36 @@ export function StaggerItem({ children, className }) {
     </motion.div>
   );
 }
+
+/*
+ * Masked wipe reveal — content is uncovered by an inset clip rather
+ * than a translate, so nothing shifts the surrounding layout.
+ */
+export function MaskReveal({
+  children,
+  className,
+  delay = 0,
+  duration = 0.9,
+  from = 'inset(0 0 100% 0)',
+}) {
+  const reduce = useReducedMotion();
+
+  if (reduce) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <motion.div
+      className={className}
+      initial={{ clipPath: from, opacity: 0.4 }}
+      whileInView={{ clipPath: 'inset(0 0 0% 0)', opacity: 1 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{
+        clipPath: { duration, delay, ease: META_EASE },
+        opacity: { duration: 0.35, delay },
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}

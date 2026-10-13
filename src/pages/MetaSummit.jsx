@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MetaHero from '../components/meta/MetaHero';
 import MetaOverview from '../components/meta/MetaOverview';
-import MetaTracks from '../components/meta/MetaTracks';
-import MetaSchedulePlaceholder from '../components/meta/MetaSchedulePlaceholder';
-import MetaFaq from '../components/meta/MetaFaq';
+import MetaMemories from '../components/meta/MetaMemories';
 import MetaInterestModal from '../components/meta/MetaInterestModal';
 import '../components/meta/metaTheme.css';
 import '../components/meta/MetaFooter.css';
@@ -24,14 +22,8 @@ export default function MetaSummit() {
       {/* Overview & Poster Slot */}
       <MetaOverview />
 
-      {/* Curated Technical Tracks */}
-      <MetaTracks />
-
-      {/* Planned Flow & Schedule Notice */}
-      <MetaSchedulePlaceholder onOpenInterestModal={() => setInterestModalOpen(true)} />
-
-      {/* Frequently Asked Questions */}
-      <MetaFaq />
+      {/* Meta Summit 2025 — Memories */}
+      <MetaMemories />
 
       {/* Interactive Priority Notification Modal */}
       <MetaInterestModal

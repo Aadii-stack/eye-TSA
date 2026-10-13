@@ -3,8 +3,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: clamp(4rem, 7vw, 6.5rem);
-  padding-bottom: clamp(6rem, 10vw, 9rem);
+  min-height: clamp(560px, 88svh, 900px);
+  padding-top: clamp(3.5rem, 6vw, 5.5rem);
+  padding-bottom: clamp(4rem, 6.5vw, 6rem);
   background: linear-gradient(180deg, #07090f 0%, #0a1428 52%, #07090f 100%);
   overflow: hidden;
 }
@@ -16,6 +17,230 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
+}
+
+.meta-hero-recede {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+.meta-hero-darkness {
+  position: absolute;
+  inset: 0;
+  background: #07090f;
+}
+
+/* The scene sinking back into night as the reader leaves the hero */
+.meta-hero-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 45%, transparent 30%, rgba(7, 9, 15, 0.85) 100%),
+    linear-gradient(180deg, rgba(7, 9, 15, 0.75) 0%, transparent 45%, rgba(7, 9, 15, 0.9) 100%);
+}
+
+/* Crimson-to-blue light trail travelling through the scene on scroll */
+.meta-hero-trail {
+  position: absolute;
+  top: 34%;
+  left: 0;
+  width: 38%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(227, 38, 54, 0.85) 28%,
+    rgba(245, 245, 247, 0.75) 50%,
+    rgba(37, 99, 235, 0.85) 72%,
+    transparent 100%
+  );
+  box-shadow: 0 0 22px rgba(227, 38, 54, 0.35), 0 0 22px rgba(37, 99, 235, 0.35);
+}
+
+/* Far skyline plane — moves slower than the foreground city */
+.meta-hero-city-far {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: 2%;
+  height: 62%;
+  opacity: 0.32;
+  filter: saturate(0.6);
+  will-change: transform;
+}
+
+.meta-hero-city-far img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 20%, transparent 88%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 20%, transparent 88%);
+}
+
+/* Slow-burning city lights behind the skyline */
+.meta-hero-lights {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 46%;
+  background:
+    radial-gradient(circle at 18% 78%, rgba(227, 38, 54, 0.3) 0 2px, transparent 3px),
+    radial-gradient(circle at 27% 62%, rgba(140, 184, 255, 0.32) 0 1.5px, transparent 3px),
+    radial-gradient(circle at 44% 84%, rgba(245, 245, 247, 0.22) 0 1.5px, transparent 3px),
+    radial-gradient(circle at 61% 68%, rgba(37, 99, 235, 0.3) 0 2px, transparent 3px),
+    radial-gradient(circle at 76% 88%, rgba(227, 38, 54, 0.26) 0 1.5px, transparent 3px),
+    radial-gradient(circle at 88% 72%, rgba(140, 184, 255, 0.26) 0 2px, transparent 3px);
+  opacity: 0.75;
+  animation: metaCityLights 9s ease-in-out infinite alternate;
+}
+
+@keyframes metaCityLights {
+  from {
+    opacity: 0.5;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0.95;
+    transform: translate3d(-10px, -3px, 0);
+  }
+}
+
+/* Drifting light specks — two offset layers, transform + opacity only */
+.meta-hero-particles,
+.meta-hero-particles::before,
+.meta-hero-particles::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.meta-hero-particles {
+  top: 8%;
+  bottom: 26%;
+  background-image:
+    radial-gradient(circle, rgba(245, 245, 247, 0.55) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(140, 184, 255, 0.5) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(227, 38, 54, 0.45) 0 1.2px, transparent 1.8px);
+  background-size: 430px 380px, 620px 520px, 780px 640px;
+  background-position: 12% 30%, 68% 62%, 38% 82%;
+  background-repeat: repeat;
+  opacity: 0.7;
+  animation: metaSpecks 34s linear infinite;
+}
+
+.meta-hero-particles::before {
+  content: '';
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(140, 184, 255, 0.45) 0 1px, transparent 1.5px);
+  background-size: 300px 260px;
+  opacity: 0.7;
+  animation: metaSpecks 52s linear infinite reverse;
+}
+
+.meta-hero-particles::after {
+  content: '';
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(227, 38, 54, 0.38) 0 1px, transparent 1.5px);
+  background-size: 520px 440px;
+  opacity: 0.55;
+  animation: metaSpecks 68s linear infinite;
+}
+
+@keyframes metaSpecks {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-60px, -140px, 0);
+  }
+}
+
+/* Red/blue light passing slowly through the skyline, on a long loop */
+.meta-hero-skyline-sweep {
+  position: absolute;
+  top: 26%;
+  bottom: 0;
+  left: 0;
+  width: 46%;
+  pointer-events: none;
+  background: linear-gradient(
+    104deg,
+    transparent 0%,
+    rgba(227, 38, 54, 0.22) 32%,
+    rgba(245, 245, 247, 0.1) 50%,
+    rgba(37, 99, 235, 0.26) 68%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transform: translate3d(-130%, 0, 0);
+  animation: metaSkylineSweep 13s cubic-bezier(0.16, 1, 0.3, 1) 1.25s infinite both;
+}
+
+@keyframes metaSkylineSweep {
+  0% {
+    opacity: 0.95;
+    transform: translate3d(-130%, 0, 0);
+  }
+  15% {
+    opacity: 0;
+    transform: translate3d(320%, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(320%, 0, 0);
+  }
+}
+
+/* Continuous depth: the city breathes, the rim lighting drifts */
+@media (prefers-reduced-motion: no-preference) {
+  .meta-hero-city img {
+    animation: metaCityDrift 32s ease-in-out infinite alternate;
+  }
+
+  .meta-hero-city-far img {
+    animation: metaCityDrift 48s ease-in-out infinite alternate-reverse;
+  }
+
+  .meta-hero-atmo-red {
+    animation: metaAtmoRed 19s ease-in-out infinite alternate;
+  }
+
+  .meta-hero-atmo-blue {
+    animation: metaAtmoBlue 24s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes metaCityDrift {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.045) translate3d(-1.2%, 1%, 0);
+  }
+}
+
+@keyframes metaAtmoRed {
+  from {
+    opacity: 0.7;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(4%, 2%, 0) scale(1.07);
+  }
+}
+
+@keyframes metaAtmoBlue {
+  from {
+    opacity: 0.75;
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-4%, -2%, 0) scale(1);
+  }
 }
 
 .meta-hero-city {
@@ -102,6 +327,21 @@
   height: auto;
 }
 
+.meta-hero-tether-slot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.meta-hero-tether-slot .meta-tether {
+  height: clamp(52px, 8vh, 96px);
+}
+
 .meta-hero-spider {
   top: 0;
   right: clamp(140px, 22vw, 300px);
@@ -117,25 +357,6 @@
 
 /* ---------- Content ---------- */
 
-.meta-circuit-banner-coords {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  max-width: var(--container-wide);
-  width: 100%;
-  margin: 0 auto 2.5rem;
-  padding: 0 1.5rem;
-  font-size: 0.72rem;
-  color: var(--meta-grey);
-  letter-spacing: 0.1em;
-}
-
-.coord-divider {
-  color: var(--meta-crimson);
-}
-
 .meta-hero-container {
   position: relative;
   z-index: 2;
@@ -144,159 +365,170 @@
 }
 
 .meta-hero-content {
-  max-width: 900px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: clamp(1.25rem, 2.4vw, 2rem);
+  container-type: inline-size;
 }
 
-.meta-flagship-pill {
-  display: inline-flex;
+/* Status + single call to action share one composed row across the width */
+.meta-hero-below {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.4rem 0.95rem;
-  background: rgba(227, 38, 54, 0.1);
-  border: 1px solid rgba(227, 38, 54, 0.4);
-  border-radius: var(--radius-pill);
-  width: fit-content;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-
-.meta-flagship-pill .circuit-dot {
-  background: var(--meta-crimson);
-  box-shadow: 0 0 8px rgba(227, 38, 54, 0.9);
-}
-
-.flagship-text {
-  font-size: 0.72rem;
-  color: #ffb3ba;
-  letter-spacing: 0.08em;
+  justify-content: space-between;
+  gap: 1.1rem 1.5rem;
+  width: 100%;
+  padding-top: clamp(1.1rem, 2vw, 1.6rem);
+  border-top: 1px solid var(--meta-border-blue);
 }
 
 /* Oversized condensed display headline with red depth + blue offset */
 .meta-hero-title-mask {
   display: block;
+  position: relative;
   overflow: hidden;
-  padding: 0.06em 0.12em 0.1em 0;
+  padding: 0.06em 0.12em 0.12em 0;
 }
 
+/* Red / blue highlight sweeping across the title edges, then settling */
+.meta-hero-title-mask::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 42%;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(227, 38, 54, 0.28) 35%,
+    rgba(245, 245, 247, 0.16) 50%,
+    rgba(37, 99, 235, 0.3) 65%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  transform: translate3d(-140%, 0, 0);
+  opacity: 0;
+  animation: metaTitleSweep 2.1s cubic-bezier(0.16, 1, 0.3, 1) 1.85s 2 both;
+}
+
+@keyframes metaTitleSweep {
+  0% {
+    opacity: 0.9;
+    transform: translate3d(-140%, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(320%, 0, 0);
+  }
+}
+
+/* Sized against its own container (not the viewport) so the string always
+   fills one line: Anton renders "COMING SOON!!" at 5.52 x font-size, so
+   16.5cqw puts the glyphs at ~91% of the available content width. */
 .meta-hero-headline {
   font-family: var(--meta-font-display);
-  font-size: clamp(3.4rem, 11vw, 9rem);
+  font-size: clamp(2rem, 16.5cqw, 215px);
   font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: 0.01em;
+  line-height: 0.9;
+  letter-spacing: -0.005em;
   text-transform: uppercase;
   color: var(--meta-white);
   text-shadow:
-    0.03em 0.03em 0 rgba(227, 38, 54, 0.85),
-    0.062em 0.062em 0 rgba(148, 27, 43, 0.55),
-    0 0 46px rgba(227, 38, 54, 0.3),
-    -0.014em -0.01em 0 rgba(37, 99, 235, 0.4);
+    0.028em 0.028em 0 rgba(227, 38, 54, 0.9),
+    0.058em 0.058em 0 rgba(148, 27, 43, 0.6),
+    0 0 52px rgba(227, 38, 54, 0.32),
+    -0.016em -0.012em 0 rgba(37, 99, 235, 0.5);
+  animation: metaHeadSettle 1.6s cubic-bezier(0.16, 1, 0.3, 1) 1.2s 1 both;
+}
+
+@keyframes metaHeadSettle {
+  from {
+    text-shadow:
+      0.085em 0.085em 0 rgba(227, 38, 54, 0.55),
+      0.17em 0.17em 0 rgba(148, 27, 43, 0.35),
+      0 0 72px rgba(227, 38, 54, 0.5),
+      -0.055em -0.045em 0 rgba(37, 99, 235, 0.55);
+  }
+  to {
+    text-shadow:
+      0.028em 0.028em 0 rgba(227, 38, 54, 0.9),
+      0.058em 0.058em 0 rgba(148, 27, 43, 0.6),
+      0 0 52px rgba(227, 38, 54, 0.32),
+      -0.016em -0.012em 0 rgba(37, 99, 235, 0.5);
+  }
 }
 
 .meta-hero-tagline-motto {
-  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  font-size: clamp(0.95rem, 1.5vw, 1.2rem);
   font-weight: 800;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
+  letter-spacing: 0.03em;
+  line-height: 1.45;
+  max-width: 34ch;
   background: linear-gradient(92deg, #ff4d5e 0%, #e32636 55%, #8cb8ff 130%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.meta-hero-lead-text {
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
-  color: var(--meta-grey);
-  line-height: 1.7;
-  max-width: 700px;
+/* ---------- Mystery status line ---------- */
+
+.meta-hero-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
-/* ---------- Status strip ---------- */
-
-.meta-hero-status-strip {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.35rem;
-  margin-top: 0.75rem;
+.status-tick {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--meta-crimson);
+  box-shadow: 0 0 0 4px rgba(227, 38, 54, 0.14), 0 0 12px rgba(227, 38, 54, 0.9);
+  animation: metaStatusTick 2.6s ease-in-out infinite;
 }
 
-.status-pill-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.6rem;
-  padding-top: 0.95rem;
-  border-top: 1px solid var(--meta-border-blue);
-}
-
-.status-pill-item:nth-child(1) {
-  border-top-color: var(--meta-border-blue);
-}
-.status-pill-item:nth-child(3) {
-  border-top-color: var(--meta-border-red);
-}
-.status-pill-item:nth-child(5) {
-  border-top-color: var(--meta-border-blue);
-}
-
-.pill-icon {
-  color: var(--meta-ice);
-  flex-shrink: 0;
-}
-
-.status-pill-item:nth-child(3) .pill-icon {
-  color: var(--meta-crimson);
-}
-
-.status-pill-item > div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.pill-label {
-  font-size: 0.66rem;
-  color: var(--meta-grey);
-  letter-spacing: 0.12em;
-}
-
-.pill-val {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--meta-white);
-  line-height: 1.45;
-}
-
-.status-active-text {
-  color: #ffb3ba;
-}
-
-.pill-strip-sep {
-  display: none;
-}
-
-@media (min-width: 680px) {
-  .meta-hero-status-strip {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+@keyframes metaStatusTick {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
   }
 }
 
-/* ---------- CTA group ---------- */
-
-.meta-hero-cta-group {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.1rem;
+.status-word {
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffb3ba;
 }
+
+/* ---------- CTA group ---------- */
 
 .notify-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
+}
+
+@media (max-width: 679px) {
+  .meta-hero-below {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .notify-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .meta-hero-particles,
+  .meta-hero-skyline-sweep {
+    display: none;
+  }
 }
